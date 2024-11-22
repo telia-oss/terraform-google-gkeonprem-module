@@ -15,7 +15,6 @@ resource "google_gkeonprem_vmware_cluster" "cluster" {
       }
     }
   }
-
   enable_control_plane_v2 = var.enable_control_plane_v2
 
   network_config {
