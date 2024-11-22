@@ -29,11 +29,11 @@ variable "network_config" {
     pod_address_cidr_blocks     = list(string)
     dns_servers                 = list(string)
     ntp_servers                 = list(string)
-    vcenter_network            = string
-    control_plane_ips          = list(string)
-    worker_node_ips            = list(string)
-    netmask                    = string
-    gateway                    = string
+    vcenter_network             = string
+    control_plane_ips           = list(string)
+    worker_node_ips             = list(string)
+    netmask                     = string
+    gateway                     = string
   })
   description = "Network configuration for the cluster"
 }
@@ -41,7 +41,7 @@ variable "network_config" {
 variable "vcenter_config" {
   type = object({
     resource_pool = string
-    folder       = string
+    folder        = string
   })
   description = "vCenter configuration"
 }
@@ -81,8 +81,8 @@ variable "node_pools_config" {
 
 variable "load_balancer_config" {
   type = object({
-    control_plane_vip = string
-    ingress_vip       = string
+    control_plane_vip  = string
+    ingress_vip        = string
     address_pool_range = string
   })
   description = "Load balancer configuration"
@@ -97,14 +97,14 @@ variable "connect_gateway_users" {
 variable "image_type" {
   type        = string
   description = "Image type for the cluster"
-  default     = "cos_cgv2" 
+  default     = "cos_cgv2"
 }
 
 variable "gke_onprem_version" {
   type        = string
   description = "GKE on-prem version"
   default     = "1.30.0-gke.1930"
-  
+
 }
 
 variable "enable_control_plane_v2" {

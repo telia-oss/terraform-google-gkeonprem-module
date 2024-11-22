@@ -4,8 +4,8 @@ resource "google_gkeonprem_vmware_cluster" "cluster" {
   admin_cluster_membership = var.admin_cluster_membership
   description              = var.cluster_name
   project                  = var.project_id
-  on_prem_version         = var.gke_onprem_version
-  annotations             = {}
+  on_prem_version          = var.gke_onprem_version
+  annotations              = {}
 
   authorization {
     dynamic "admin_users" {
@@ -21,7 +21,7 @@ resource "google_gkeonprem_vmware_cluster" "cluster" {
   network_config {
     service_address_cidr_blocks = var.network_config.service_address_cidr_blocks
     pod_address_cidr_blocks     = var.network_config.pod_address_cidr_blocks
-    
+
     host_config {
       dns_servers = var.network_config.dns_servers
       ntp_servers = var.network_config.ntp_servers
@@ -70,9 +70,9 @@ resource "google_gkeonprem_vmware_cluster" "cluster" {
     }
     metal_lb_config {
       address_pools {
-        pool          = "metallb-1"
-        manual_assign = "false"
-        addresses     = [var.load_balancer_config.address_pool_range]
+        pool            = "metallb-1"
+        manual_assign   = "false"
+        addresses       = [var.load_balancer_config.address_pool_range]
         avoid_buggy_ips = true
       }
     }
