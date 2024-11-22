@@ -57,26 +57,15 @@ variable "control_plane_config" {
 
 variable "node_pools_config" {
   type = map(object({
-    cpus              = number
-    memory_mb         = number
-    replicas          = number
-    min_replicas      = number
-    max_replicas      = number
-    boot_disk_size_gb = number
-    image_type        = string
+    cpus              = optional(number, 2)
+    memory_mb         = optional(number, 4096)
+    replicas          = optional(number, 3)
+    min_replicas      = optional(number, 3)
+    max_replicas      = optional(number, 4)
+    boot_disk_size_gb = optional(number, 30)
+    image_type        = optional(string, "cos_cgv2")
   }))
   description = "Map of node pool configurations"
-  default = {
-    "default-pool" = {
-      cpus              = 2
-      memory_mb         = 4096
-      replicas          = 3
-      min_replicas      = 3
-      max_replicas      = 4
-      boot_disk_size_gb = 30
-      image_type        = "cos_cgv2"
-    }
-  }
 }
 
 variable "load_balancer_config" {
@@ -98,13 +87,24 @@ variable "image_type" {
   type        = string
   description = "Image type for the cluster"
   default     = "cos_cgv2"
+
+  validation {
+    condition     = contains(["cos_cgv2", "cos", "ubuntu_cgv2", "ubuntu", "ubuntu_containerd", "windows"], var.image_type)
+    error_message = "Allowed values for image_type are: cos, cos_cgv2, ubuntu, ubuntu_cgv2, ubuntu_containerd and windows"
+  }
 }
+
+
 
 variable "gke_onprem_version" {
   type        = string
   description = "GKE on-prem version"
   default     = "1.30.0-gke.1930"
 
+  validation {
+    condition     = can(regex("^[0-9]+\\.[0-9]+\\.[0-9]+-gke\\.[0-9]+$", var.gke_onprem_version))
+    error_message = "GKE on-prem version must be in format X.Y.Z-gke.N"
+  }
 }
 
 variable "enable_control_plane_v2" {
