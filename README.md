@@ -25,38 +25,68 @@ This Terraform module deploys Google Kubernetes Engine (GKE) On-Premises cluster
 
 ```hcl
 module "gke_onprem_vmware_cluster" {
-  source = "path/to/module"
+  source = "telia-oss/gkeonprem/gcp"
 
+  # Required parameters
   cluster_name             = "my-cluster"
   location                 = "us-west1"
-  project_id              = "my-project"
+  project_id               = "my-project"
   admin_cluster_membership = "projects/my-project/locations/us-west1/memberships/admin-cluster"
-  admin_users             = ["admin@example.com"]
+  admin_users              = ["admin@example.com"]
 
+  # vCenter configuration
   vcenter_config = {
     resource_pool = "/Datacenter/host/Cluster/Resources/Pool"
     folder        = "/Datacenter/vm/Folder"
   }
 
+  # Network configuration
   network_config = {
     dns_servers           = ["8.8.8.8"]
     ntp_servers           = ["time.google.com"]
     vcenter_network       = "VM Network"
     control_plane_ips     = ["10.0.0.5", "10.0.0.6", "10.0.0.7"]
     worker_node_ip_ranges = ["10.0.0.20-10.0.0.30"]
-    netmask              = "255.255.255.0"
-    gateway              = "10.0.0.1"
+    netmask               = "255.255.255.0"
+    gateway               = "10.0.0.1"
   }
 
+  # Load balancer configuration
   load_balancer_config = {
     control_plane_vip = "10.0.0.100"
     ingress_vip       = "10.0.0.101"
     address_pools = {
       "default-pool" = {
-        addresses = ["10.0.0.200-10.0.0.250"]
+        addresses       = ["10.0.0.200-10.0.0.250"]
+        manual_assign   = false
+        avoid_buggy_ips = true
       }
     }
   }
+
+  # Optional configurations
+  control_plane_node = {
+    cpus     = 4
+    memory   = 8192
+    replicas = 3
+  }
+
+  node_pools_config = {
+    "default-pool" = {
+      cpus              = 2
+      memory_mb         = 4096
+      replicas          = 3
+      min_replicas      = 3
+      max_replicas      = 4
+      boot_disk_size_gb = 30
+      image_type        = "cos_cgv2"
+    }
+    # Additional node pools can be defined here
+  }
+
+  connect_gateway_users   = ["user1@example.com", "user2@example.com"]
+  gke_onprem_version      = "1.30.0-gke.1930"
+  enable_control_plane_v2 = true
 }
 ```
 
