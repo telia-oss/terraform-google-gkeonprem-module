@@ -77,7 +77,7 @@ variable "control_plane_node" {
 }
 
 variable "node_pools_config" {
-  type = optional(map(object({
+  type = map(object({
     cpus              = optional(number, 2)
     memory_mb         = optional(number, 4096)
     replicas          = optional(number, 1)
@@ -85,7 +85,7 @@ variable "node_pools_config" {
     max_replicas      = optional(number, 3)
     boot_disk_size_gb = optional(number, 30)
     image_type        = optional(string, "cos_cgv2")
-  })))
+  }))
   description = "Map of node pool configurations"
 
   validation {
