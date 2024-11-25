@@ -106,7 +106,7 @@ resource "google_gkeonprem_vmware_cluster" "cluster" {
   }
 }
 
-resource "google_gkeonprem_vmware_node_pool" "node_pools" {
+resource "google_gkeonprem_vmware_node_pool" "node_pool" {
   for_each       = var.node_pools_config
   name           = each.key
   location       = var.location
@@ -133,9 +133,9 @@ resource "google_gkeonprem_vmware_node_pool" "node_pools" {
 
   lifecycle {
     ignore_changes = [
-      config.vsphere_config,
-      config.image_type,
-      config.image
+      config[0].vsphere_config,
+      config[0].image_type,
+      config[0].image
     ]
   }
 }
