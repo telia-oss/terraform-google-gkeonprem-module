@@ -26,9 +26,9 @@ module "gke_onprem_vmware_cluster" {
   # Node pools configurations with minimal overrides
   node_pools_config = {
     "default-pool" = {
-      replicas          = 3
-      min_replicas      = 3
-      max_replicas      = 4
+      replicas     = 3
+      min_replicas = 3
+      max_replicas = 4
     }
     # Additional node pools can be defined here
   }
