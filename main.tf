@@ -45,7 +45,7 @@ resource "google_gkeonprem_vmware_cluster" "cluster" {
         gateway = var.network_config.gateway
 
         dynamic "ips" {
-          for_each = var.network_config.worker_node_ips
+          for_each = local.worker_ips
           content {
             ip = ips.value
           }
@@ -57,10 +57,12 @@ resource "google_gkeonprem_vmware_cluster" "cluster" {
   }
 
   control_plane_node {
-    cpus     = var.control_plane_config.cpus
-    memory   = var.control_plane_config.memory
-    replicas = var.control_plane_config.replicas
+    cpus     = var.control_plane_node.cpus
+    memory   = var.control_plane_node.memory
+    replicas = var.control_plane_node.replicas
   }
+
+
 
   load_balancer {
     vip_config {
@@ -68,11 +70,14 @@ resource "google_gkeonprem_vmware_cluster" "cluster" {
       ingress_vip       = var.load_balancer_config.ingress_vip
     }
     metal_lb_config {
-      address_pools {
-        pool            = "metallb-1"
-        manual_assign   = "false"
-        addresses       = [var.load_balancer_config.address_pool_range]
-        avoid_buggy_ips = true
+      dynamic "address_pools" {
+        for_each = var.load_balancer_config.address_pools
+        content {
+          pool            = address_pools.key
+          manual_assign   = address_pools.value.manual_assign
+          addresses       = address_pools.value.addresses
+          avoid_buggy_ips = address_pools.value.avoid_buggy_ips
+        }
       }
     }
   }

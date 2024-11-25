@@ -25,17 +25,33 @@ variable "admin_users" {
 
 variable "network_config" {
   type = object({
-    service_address_cidr_blocks = list(string)
-    pod_address_cidr_blocks     = list(string)
+    service_address_cidr_blocks = optional(list(string), ["10.96.0.0/12"])
+    pod_address_cidr_blocks     = optional(list(string), ["192.168.0.0/16"])
     dns_servers                 = list(string)
     ntp_servers                 = list(string)
     vcenter_network             = string
     control_plane_ips           = list(string)
-    worker_node_ips             = list(string)
+    worker_node_ip_ranges       = list(string)
     netmask                     = string
     gateway                     = string
   })
   description = "Network configuration for the cluster"
+
+  validation {
+    condition = alltrue([
+      for range in var.network_config.worker_node_ip_ranges :
+      can(regex("^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)-(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$", range))
+    ])
+    error_message = "Worker node IP ranges must be in format: x.x.x.y-x.x.x.z where x,y,z are valid IPv4 octets (0-255) and z > y"
+  }
+
+  validation {
+    condition = alltrue([
+      for range in var.network_config.worker_node_ip_ranges :
+      tonumber(split(".", split("-", range)[1])[3]) > tonumber(split(".", split("-", range)[0])[3])
+    ])
+    error_message = "End IP must be greater than start IP in each range"
+  }
 }
 
 variable "vcenter_config" {
@@ -46,33 +62,52 @@ variable "vcenter_config" {
   description = "vCenter configuration"
 }
 
-variable "control_plane_config" {
+variable "control_plane_node" {
   type = object({
-    cpus     = number
-    memory   = number
-    replicas = number
-  })
+    cpus     = optional(number, 4)
+    memory   = optional(number, 8192)
+    replicas = optional(number, 3)
+  }) # Add empty map as default
   description = "Control plane node configuration"
+  default = {
+    cpus     = 4
+    memory   = 8192
+    replicas = 3
+  }
 }
 
 variable "node_pools_config" {
-  type = map(object({
+  type = optional(map(object({
     cpus              = optional(number, 2)
     memory_mb         = optional(number, 4096)
-    replicas          = optional(number, 3)
-    min_replicas      = optional(number, 3)
-    max_replicas      = optional(number, 4)
+    replicas          = optional(number, 1)
+    min_replicas      = optional(number, 1)
+    max_replicas      = optional(number, 3)
     boot_disk_size_gb = optional(number, 30)
     image_type        = optional(string, "cos_cgv2")
-  }))
+  })))
   description = "Map of node pool configurations"
+
+  validation {
+    condition = alltrue([
+      for k, v in var.node_pools_config : contains(
+        ["cos_cgv2", "cos", "ubuntu_cgv2", "ubuntu", "ubuntu_containerd", "windows"],
+        v.image_type
+      )
+    ])
+    error_message = "Allowed values for image_type are: cos, cos_cgv2, ubuntu, ubuntu_cgv2, ubuntu_containerd and windows"
+  }
 }
 
 variable "load_balancer_config" {
   type = object({
-    control_plane_vip  = string
-    ingress_vip        = string
-    address_pool_range = string
+    control_plane_vip = string
+    ingress_vip       = string
+    address_pools = map(object({
+      manual_assign   = optional(bool, false)
+      addresses       = list(string)
+      avoid_buggy_ips = optional(bool, true)
+    }))
   })
   description = "Load balancer configuration"
 }
@@ -82,19 +117,6 @@ variable "connect_gateway_users" {
   description = "List of users that should have GKE Connect Gateway access"
   default     = []
 }
-
-variable "image_type" {
-  type        = string
-  description = "Image type for the cluster"
-  default     = "cos_cgv2"
-
-  validation {
-    condition     = contains(["cos_cgv2", "cos", "ubuntu_cgv2", "ubuntu", "ubuntu_containerd", "windows"], var.image_type)
-    error_message = "Allowed values for image_type are: cos, cos_cgv2, ubuntu, ubuntu_cgv2, ubuntu_containerd and windows"
-  }
-}
-
-
 
 variable "gke_onprem_version" {
   type        = string
