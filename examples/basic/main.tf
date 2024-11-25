@@ -7,6 +7,7 @@ module "gke_onprem_vmware_cluster" {
   admin_cluster_membership = "projects/example-project/locations/us-west1/memberships/example-admin-cluster"
   project_id               = "example-project"
   admin_users              = ["admin@example.com"]
+  connect_gateway_users    = ["user1@example.com", "user2@example.com"]
   # Required vCenter configuration
   vcenter_config = {
     resource_pool = "/datacenter/cluster/resource_pool"
@@ -22,9 +23,14 @@ module "gke_onprem_vmware_cluster" {
     netmask               = "255.255.255.0"
     gateway               = "192.168.1.254"
   }
-  # Optional configurations with minimal overrides
+  # Node pools configurations with minimal overrides
   node_pools_config = {
-    #"default-pool" = {}
+    "default-pool" = {
+      replicas          = 3
+      min_replicas      = 3
+      max_replicas      = 4
+    }
+    # Additional node pools can be defined here
   }
   # MetalLB configuration
   load_balancer_config = {
