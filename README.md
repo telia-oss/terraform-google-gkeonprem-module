@@ -17,9 +17,9 @@ This Terraform module deploys Google Kubernetes Engine (GKE) On-Premises cluster
 
 | Name       | Version   |
 | ---------- | --------- |
-| terraform  | >= 1.0    |
-| google     | >= 6.12.0 |
-| kubernetes | >= 2.33.0 |
+| terraform  | ~> 1.7    |
+| google     | ~> 6.12.0 |
+| kubernetes | ~> 2.33.0 |
 
 ## Usage
 
