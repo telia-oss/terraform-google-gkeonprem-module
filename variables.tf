@@ -38,14 +38,14 @@ variable "network_config" {
   description = "Network configuration for the cluster"
 
   validation {
-  condition = alltrue([
-    for range in var.network_config.worker_node_ip_ranges :
-    can(regex("^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\-((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$", range))
-    &&
-    join("", split(".", element(split("-", range), 0))) < join("", split(".", element(split("-", range), 1)))
-  ])
-  error_message = "Worker node IP ranges must be in format: x.x.x.y-x.x.x.z where x,y,z are valid IPv4 octets (0-255) and z > y"
-}
+    condition = alltrue([
+      for range in var.network_config.worker_node_ip_ranges :
+      can(regex("^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\-((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$", range))
+      &&
+      join("", split(".", element(split("-", range), 0))) < join("", split(".", element(split("-", range), 1)))
+    ])
+    error_message = "Worker node IP ranges must be in format: x.x.x.y-x.x.x.z where x,y,z are valid IPv4 octets (0-255) and z > y"
+  }
 
   validation {
     condition = alltrue([
