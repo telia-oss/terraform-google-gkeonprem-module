@@ -1,4 +1,5 @@
 module "cluster_credentials" {
+  count                             = length(var.connect_gateway_users) > 0 ? 1 : 0
   source                            = "terraform-google-modules/gcloud/google"
   version                           = "~> 3.0"
   platform                          = var.platform
