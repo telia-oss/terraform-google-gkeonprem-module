@@ -6,6 +6,8 @@ locals {
 }
 
 resource "kubernetes_cluster_role" "gateway_impersonate" {
+  count = length(var.connect_gateway_users) > 0 ? 1 : 0
+
   metadata {
     name = "gateway-impersonate"
   }
@@ -15,25 +17,31 @@ resource "kubernetes_cluster_role" "gateway_impersonate" {
     resource_names = var.connect_gateway_users
     verbs          = ["impersonate"]
   }
+  depends_on = [module.cluster_credentials]
 }
 
 resource "kubernetes_cluster_role_binding" "gateway_impersonate" {
+  count = length(var.connect_gateway_users) > 0 ? 1 : 0
+
   metadata {
     name = "gateway-impersonate"
   }
   role_ref {
     api_group = "rbac.authorization.k8s.io"
     kind      = "ClusterRole"
-    name      = kubernetes_cluster_role.gateway_impersonate.metadata[0].name
+    name      = kubernetes_cluster_role.gateway_impersonate[0].metadata[0].name
   }
   subject {
     kind      = "ServiceAccount"
     name      = local.service_account.name
     namespace = local.service_account.namespace
   }
+  depends_on = [module.cluster_credentials]
 }
 
 resource "kubernetes_cluster_role_binding" "gateway_cluster_admin" {
+  count = length(var.connect_gateway_users) > 0 ? 1 : 0
+
   metadata {
     name = "gateway-cluster-admin"
   }
@@ -50,4 +58,5 @@ resource "kubernetes_cluster_role_binding" "gateway_cluster_admin" {
       name = subject.value
     }
   }
+  depends_on = [module.cluster_credentials]
 }
