@@ -147,3 +147,21 @@ variable "platform" {
     error_message = "Platform must be one of linux, darwin (macOS)"
   }
 }
+
+variable "timeout_create" {
+  type        = string
+  description = "Timeout for create operations"
+  default     = "2h"
+}
+
+variable "timeout_update" {
+  type        = string
+  description = "Timeout for update operations"
+  default     = "4h"
+}
+
+variable "timeout_delete" {
+  type        = string
+  description = "Timeout for delete operations"
+  default     = "2h"
+}

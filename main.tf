@@ -104,6 +104,11 @@ resource "google_gkeonprem_vmware_cluster" "cluster" {
       dataplane_v2
     ]
   }
+  timeouts {
+    create = var.timeout_create
+    update = var.timeout_update
+    delete = var.timeout_delete
+  }
 }
 
 resource "google_gkeonprem_vmware_node_pool" "node_pool" {
@@ -137,5 +142,10 @@ resource "google_gkeonprem_vmware_node_pool" "node_pool" {
       config[0].image_type,
       config[0].image
     ]
+  }
+  timeouts {
+    create = var.timeout_create
+    update = var.timeout_update
+    delete = var.timeout_delete
   }
 }
