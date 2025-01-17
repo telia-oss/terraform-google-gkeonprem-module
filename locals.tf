@@ -13,7 +13,5 @@ locals {
       )
     ]
   ])
-}
-locals {
   connect_gateway_endpoint = "https://${var.location}-connectgateway.googleapis.com/v1/projects/${data.google_project.project.number}/locations/${var.location}/memberships/${google_gkeonprem_vmware_cluster.cluster.name}"
 }
