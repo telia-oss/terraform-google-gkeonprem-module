@@ -58,9 +58,10 @@ variable "network_config" {
 
 variable "vcenter_config" {
   type = object({
-    resource_pool = string
-    folder        = string
+    resource_pool = optional(string)
+    folder        = optional(string)
   })
+  default     = {}
   description = "vCenter configuration"
 }
 
