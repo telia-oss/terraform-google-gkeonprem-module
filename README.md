@@ -163,10 +163,10 @@ module "gke_onprem_vmware_cluster" {
 ## `vcenter_config`
 
 - **`resource_pool`**:  
-  Full path to the vCenter resource pool (*required*).
+  Full path to the vCenter resource pool (*optional*).
 
 - **`folder`**:  
-  Full path to the vCenter folder (*required*).
+  Full path to the vCenter folder (*optional*).
 
 ---
 
