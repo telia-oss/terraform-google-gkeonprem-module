@@ -1,7 +1,7 @@
 resource "helm_release" "connect_gateway_rbac" {
   name      = "connect-gateway-rbac"
   namespace = "gke-connect"
-  chart     = "./connect-gateway-rbac" # Path to your local chart directory
+  chart     = "./connect-gateway-rbac"
   wait      = true
   timeout   = 300
   values = [
