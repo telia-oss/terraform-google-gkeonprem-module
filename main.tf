@@ -101,6 +101,7 @@ resource "google_gkeonprem_vmware_cluster" "cluster" {
       vcenter[0].cluster,
       vcenter[0].datacenter,
       vcenter[0].datastore,
+      vcenter[0].folder,
       dataplane_v2
     ]
   }
