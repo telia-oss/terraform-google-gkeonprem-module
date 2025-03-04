@@ -1,0 +1,12 @@
+{{- if .Values.connectGatewayUsers }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: connect-gateway-impersonate-helm
+rules:
+  - apiGroups: [""]
+    resources: ["users"]
+    resourceNames:
+{{ toYaml .Values.connectGatewayUsers | indent 6 }}
+    verbs: ["impersonate"]
+{{- end }}
