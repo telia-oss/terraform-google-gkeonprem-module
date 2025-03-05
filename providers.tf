@@ -9,7 +9,7 @@ terraform {
   required_providers {
     google = {
       source  = "hashicorp/google"
-      version = "~> 6.12"
+      version = "~> 6.24"
     }
     helm = {
       source  = "hashicorp/helm"
@@ -20,10 +20,10 @@ terraform {
 }
 
 provider "helm" {
-  kubernetes {
+  kubernetes = {
     host  = local.connect_gateway_endpoint
     token = data.google_client_config.provider.access_token
-    exec {
+    exec = {
       api_version = "client.authentication.k8s.io/v1beta1"
       command     = "gke-gcloud-auth-plugin"
     }
