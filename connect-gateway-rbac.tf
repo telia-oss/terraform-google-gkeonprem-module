@@ -4,10 +4,10 @@ resource "helm_release" "connect_gateway_rbac" {
   chart     = "./connect-gateway-rbac"
   wait      = true
   timeout   = 300
-  values = [
-    yamlencode({
-      connectGatewayUsers = var.connect_gateway_users
-    })
-  ]
+  set_list {
+    name  = "connectGatewayUsers"
+    value = var.connect_gateway_users
+  }
   depends_on = [google_gkeonprem_vmware_cluster.cluster]
 }
+
