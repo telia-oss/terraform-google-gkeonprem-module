@@ -11,9 +11,9 @@ terraform {
       source  = "hashicorp/google"
       version = "~> 6.12"
     }
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = "~> 2.33"
+    helm = {
+      source  = "hashicorp/helm"
+      version = "3.0.0-pre2"
     }
   }
   required_version = ">= 1.7.0"
