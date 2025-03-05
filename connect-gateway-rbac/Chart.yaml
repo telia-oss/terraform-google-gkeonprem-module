@@ -1,0 +1,4 @@
+apiVersion: v2
+name: connect-gateway-chart
+description: A Helm chart to deploy RBAC resources to use connect gateway.
+version: 1.0.0

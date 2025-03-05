@@ -1,0 +1,7 @@
+# Service account configuration
+serviceAccount:
+  name: connect-agent-sa
+  namespace: gke-connect
+
+# List of gateway users. If empty, RBAC resources won’t be created.
+connectGatewayUsers: []
