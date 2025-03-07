@@ -1,4 +1,5 @@
 resource "helm_release" "connect_gateway_rbac" {
+  count     = length(var.connect_gateway_users) > 0 ? 1 : 0
   name      = "connect-gateway-rbac"
   namespace = "gke-connect"
   chart     = "${path.module}/connect-gateway-rbac"
