@@ -8,6 +8,6 @@ resource "helm_release" "connect_gateway_rbac" {
     name  = "connectGatewayUsers"
     value = var.connect_gateway_users
   }]
-  depends_on = [google_gkeonprem_vmware_cluster.cluster]
+  depends_on = [google_gkeonprem_vmware_node_pool.node_pool]
 }
 
