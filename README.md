@@ -1,6 +1,6 @@
 # Google Cloud GKE On-Premises VMware Terraform Module
 
-This Terraform module deploys Google Kubernetes Engine (GKE) On-Premises clusters on VMware vSphere infrastructure, with support for multiple node pools, load balancing, and RBAC configuration.
+This Terraform module deploys Google Kubernetes Engine (GKE) On-Premises clusters on VMware vSphere infrastructure, with support for multiple node pools, load balancing, RBAC configuration, and automated IAM permissions for Connect Gateway access.
 
 ## Features
 
@@ -10,8 +10,14 @@ This Terraform module deploys Google Kubernetes Engine (GKE) On-Premises cluster
 - Flexible IP management for worker nodes using IP ranges
 - MetalLB integration for load balancing with customizable address pools
 - RBAC configuration with admin and gateway user management 
+- **Automatic assignment of required IAM roles for Connect Gateway users and service accounts at the GCP project level**
 - Anti-affinity group and auto-repair configuration
 - IP range validation and automatic IP allocation from ranges
+
+## Connect Gateway IAM Permissions
+
+This module automatically assigns the necessary IAM roles (`roles/gkehub.gatewayAdmin`, `roles/gkehub.viewer`, and `roles/container.clusterViewer`) at the GCP project level to all users and service accounts specified in the `connect_gateway_users` variable.  
+Both user emails and service account emails are supported. The module detects the type and applies the correct IAM member format (`user:{email}` or `serviceAccount:{email}`) for each identity.
 
 ## Requirements
 
@@ -33,7 +39,11 @@ module "gke_onprem_vmware_cluster" {
   project_id               = "my-project"
   admin_cluster_membership = "projects/my-project/locations/us-west1/memberships/admin-cluster"
   admin_users              = ["admin@example.com"]
-
+  connect_gateway_users = [
+    "user1@example.com",
+    "service-account@project.iam.gserviceaccount.com"
+  ]
+  
   # vCenter configuration
   vcenter_config = {
     resource_pool = "/Datacenter/host/Cluster/Resources/Pool"
