@@ -13,5 +13,15 @@ locals {
       )
     ]
   ])
+
   connect_gateway_endpoint = "https://${var.location}-connectgateway.googleapis.com/v1/projects/${data.google_project.project.number}/locations/${var.location}/memberships/${google_gkeonprem_vmware_cluster.cluster.name}"
+
+  connect_gateway_identities = [
+    for user in var.connect_gateway_users : (
+      can(regex("@.*\\.iam\\.gserviceaccount\\.com$", user))
+      ? "serviceAccount:${user}"
+      : "user:${user}"
+    )
+  ]
 }
+
