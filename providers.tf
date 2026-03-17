@@ -15,10 +15,13 @@ terraform {
       source  = "hashicorp/helm"
       version = "3.0.0-pre2"
     }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "3.0.1"
+    }
   }
   required_version = ">= 1.7.0"
 }
-
 provider "helm" {
   kubernetes = {
     host  = local.connect_gateway_endpoint
@@ -30,3 +33,11 @@ provider "helm" {
   }
 }
 
+provider "kubernetes" {
+  host  = local.connect_gateway_endpoint
+  token = data.google_client_config.provider.access_token
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    command     = "gke-gcloud-auth-plugin"
+  }
+}
